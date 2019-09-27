@@ -7,9 +7,11 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageObjects.Weather24;
 
 public class TestFile {
     private WebDriver driver;
@@ -21,30 +23,23 @@ public class TestFile {
     public void setUp() throws Exception {
         System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver.exe");
         driver = new ChromeDriver();
-        driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         String baseUrl = "http://weather.news24.com";
         driver.get(baseUrl);
-        WebElement minTemp;
-        WebElement maxTemp;
-        /*
-        String actualTitle = driver.getTitle();
-        System.out.println("Actual Title is: " + actualTitle);
-        Assert.assertEquals(actualTitle, expectedTitle);*/
     }
 
     @Test
     public void testWeather24() throws Exception {
 
-        driver.findElement(By.xpath("//*[@id=\"ctl00_WeatherContentHolder_ddlCity\"]")).click();
-        driver.findElement(By.xpath("//*//*[@id=\"ctl00_WeatherContentHolder_ddlCity\"]/option[11]")).click();
-        driver.findElement(By.xpath("//*[@id=\"ctl00_WeatherContentHolder_btnGo\"]")).click();
-        driver.findElement(By.xpath("//*[@id=\"ext-gen32\"]")).click();
-        Thread.sleep(3000);
-        String currentWeather =  driver.findElement(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr[3]/td[4]")).getText();
-        System.out.println(currentWeather);
-        Thread.sleep(3000);
-        String currentWeather2 =  driver.findElement(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr[3]/td[5]")).getText();
-        System.out.println(currentWeather2);
+        Weather24 weather24 = PageFactory.initElements
+                (driver, Weather24.class);
+
+        weather24.selectCity();
+        weather24.CityName();
+        weather24.clickGo();
+        weather24.clickExpandedForecast();
+        weather24.MaxTemp();
+        weather24.MinTemp();
     }
 
     @After
