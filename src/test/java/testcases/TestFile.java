@@ -23,14 +23,11 @@ public class TestFile {
 
     @Before
     public void setUp() throws Exception {
-        //System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver.exe");
+        //System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver.exe"); //on the current machine, the chrome.driver path is specified within the environment variables in system settings
         driver = new ChromeDriver();
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         String baseUrl = "http://weather.news24.com";
         driver.get(baseUrl);
-        //Thread.sleep(3000);
-        //String accuURL = "https://www.accuweather.com";
-        //driver.get(accuURL);
     }
 
     @Test
@@ -47,42 +44,96 @@ public class TestFile {
         WebDriverWait wait = new WebDriverWait(driver, 30);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr[3]/td[4]")));
 
-        System.out.println("<<<<< WEATHER24 TEMPERATURES >>>>>");
-        System.out.println("------------------------------------");
-        System.out.println("|Day" + "      |" + "Max" + "      |" + "Min");
-        System.out.println("------------------------------------");
-        for(int i = 3; i <= 7; i++){
-            String Days = driver.findElement(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr" +"[" + i +"]"+"/td[1]")).getText();
-            String MinTemp = driver.findElement(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr"+"[" + i + "]"+"/td[5]")).getText();
-            String MaxTemp = driver.findElement(By.xpath(".//*[@id=\"forecastContent\"]/table/tbody/tr"+"[" + i + "]"+"/td[4]")).getText();
-            System.out.println(Days + "       " + MaxTemp + "       " + MinTemp);
-        }
+        //store minimum and maximum temperature values in a String array
+        String[] weatherMaxTemperatures = new String[5];
+        String[] weatherMinTemperatures = new String[5];
 
+        //populating the String arrays by findElement by xpath and getText().
+        weatherMaxTemperatures[0] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[3]/td[4]")).getText();
+        weatherMaxTemperatures[1] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[4]/td[4]")).getText();
+        weatherMaxTemperatures[2] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[5]/td[4]")).getText();
+        weatherMaxTemperatures[3] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[6]/td[4]")).getText();
+        weatherMaxTemperatures[4] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[7]/td[4]")).getText();
+
+        //populate String array for minimum temperatures.
+        weatherMinTemperatures[0] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[3]/td[5]")).getText();
+        weatherMinTemperatures[1] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[4]/td[5]")).getText();
+        weatherMinTemperatures[2] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[5]/td[5]")).getText();
+        weatherMinTemperatures[3] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[6]/td[5]")).getText();
+        weatherMinTemperatures[4] = driver.findElement(By.xpath("//*[@id=\"forecastContent\"]/table/tbody/tr[7]/td[5]")).getText();
+
+        //opening the accuweather url
         String accuURL = "https://www.accuweather.com";
         driver.get(accuURL);
         Thread.sleep(3000);
-
         Accuweather accuweather = PageFactory.initElements(driver, Accuweather.class);
-        Thread.sleep(3000);
         accuweather.query();
         driver.findElement(By.xpath("./html/body/div/div[1]/div[2]/div[1]/form/input")).sendKeys(Keys.ENTER);
         accuweather.selectLocation();
         accuweather.clickDaily();
 
-        System.out.println("<<<<< ACCUWEATHER TEMPERATURES >>>>>");
-        System.out.println("------------------------------------");
-        System.out.println("|Day" + "      |" + "Max" + "      |" + "Min");
-        System.out.println("------------------------------------");
-        for (int x = 1; x <= 5; x++){
-            String days = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[" + x + "]/div[1]/p[1]")).getText();
-            String tempMax = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[" + x + "]/div[2]/span[1]")).getText();
-            String tempMin = driver.findElement(By.xpath("/html/body/div/div[5]/div/div[1]/div/div[1]/a[" + x + "]/div[2]/span[2]")).getText();
-            System.out.println(days + "       " + tempMax + "C" + "       " + tempMin.substring(2));
+        //store minimum and maximum temperature values in a String array
+        String[] accuMaxTemperatures = new String[5];
+        String[] accuMinTemperatures = new String[5];
+
+        Thread.sleep(3000);
+
+        //populating the String arrays by findElement by xpath and getText().
+        accuMaxTemperatures[0] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[1]/div[2]/span[1]")).getText() + "C";
+        accuMaxTemperatures[1] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[2]/div[2]/span[1]")).getText() + "C";
+        accuMaxTemperatures[2] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[3]/div[2]/span[1]")).getText() + "C";
+        accuMaxTemperatures[3] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[4]/div[2]/span[1]")).getText() + "C";
+        accuMaxTemperatures[4] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[5]/div[2]/span[1]")).getText() + "C";
+
+        //populate String array for minimum temperatures.
+        accuMinTemperatures[0] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[1]/div[2]/span[2]")).getText().substring(2) + "C";
+        accuMinTemperatures[1] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[2]/div[2]/span[2]")).getText().substring(2) + "C";
+        accuMinTemperatures[2] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[3]/div[2]/span[2]")).getText().substring(2) + "C";
+        accuMinTemperatures[3] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[4]/div[2]/span[2]")).getText().substring(2) + "C";
+        accuMinTemperatures[4] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[5]/div[2]/span[2]")).getText().substring(2) + "C";
+
+        //creating an array to store values for days
+        String[] accuDays = new String[5];
+
+        accuDays[0] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[1]/div[1]/p[1]")).getText();
+        accuDays[1] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[2]/div[1]/p[1]")).getText();
+        accuDays[2] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[3]/div[1]/p[1]")).getText();
+        accuDays[3] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[4]/div[1]/p[1]")).getText();
+        accuDays[4] = driver.findElement(By.xpath("./html/body/div/div[5]/div/div[1]/div/div[1]/a[5]/div[1]/p[1]")).getText();
+
+        //Created FOR LOOP with IF STATEMENT to display and compare the maximum temperature arrays
+        System.out.println("<<<<< COMPARE MAXIMUM TEMPERATURES >>>>>");
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println("Day" + "          " + "|Weather24" + "         " + "|Accuweather" + "            " + "|Comment");
+        System.out.println("------------------------------------------------------------------------------------------");
+        for (int x = 0; x <= 4; x++) {
+
+            if (weatherMaxTemperatures[x].equals(accuMaxTemperatures[x])) {
+                System.out.println(accuDays[x] + "          " + weatherMaxTemperatures[x] + "                 " + accuMaxTemperatures[x] + "                    " + "The temperatures are the same.");
+            }
+
+            else {
+                System.out.println(accuDays[x] + "          " + weatherMaxTemperatures[x] + "                 " + accuMaxTemperatures[x] + "                    " + "The temperatures are different.");
+            }
         }
 
+        System.out.println("\n");
 
+        //Created FOR LOOP with IF STATEMENT to display and compare the minimum temperature arrays
+        System.out.println("<<<<< COMPARE MINIMUM TEMPERATURES >>>>>");
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println("Day" + "          " + "|Weather24" + "         " + "|Accuweather" + "            " + "|Comment");
+        System.out.println("------------------------------------------------------------------------------------------");
+        for (int j = 0; j <= 4; j++) {
+
+            if (weatherMinTemperatures[j].equals(accuMinTemperatures[j])) {
+                System.out.println(accuDays[j] + "          " + weatherMinTemperatures[j] + "                 " + accuMinTemperatures[j] + "                    " + "The temperatures are the same.");
+            }
+            else {
+                System.out.println(accuDays[j] + "          " + weatherMinTemperatures[j] + "                 " + accuMinTemperatures[j] + "                    " + "The temperatures are different.");
+            }
+        }
     }
-
 
     @After
     public void tearDown() throws Exception {
@@ -125,5 +176,4 @@ public class TestFile {
             acceptNextAlert = true;
         }
     }
-
 }
