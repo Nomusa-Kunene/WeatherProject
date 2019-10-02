@@ -1,15 +1,11 @@
 package pageObjects;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Weather24 {
+    //identified web elements for weather24 and declared them as private variables
     @FindBy(how = How.XPATH, using = "//*[@id=\"ctl00_WeatherContentHolder_ddlCity\"]")
     private WebElement cityDropDown;
     @FindBy(how = How.XPATH, using = "//*[@id=\"ctl00_WeatherContentHolder_ddlCity\"]/option[11]")
@@ -20,18 +16,23 @@ public class Weather24 {
     private WebElement weatherForecast;
 
 
+    //created class methods to access the elements.
+    //click on the drop down for city
     public void selectCity(){
         cityDropDown.click();
     }
 
+    //select city "Bloemfontein"
     public void CityName(){
         CityName.click();
     }
 
+    //click on the Go button
     public void clickGo() {
         btnGo.click();
     }
 
+    //select the 7 day weather forecast
     public void clickExpandedForecast() {
         weatherForecast.click();
     }
